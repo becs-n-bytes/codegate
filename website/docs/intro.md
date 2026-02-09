@@ -1,3 +1,9 @@
+---
+sidebar_position: 1
+title: Getting Started
+slug: /intro
+---
+
 # codegate
 
 Provider-agnostic HTTP gateway to coding agent CLIs (Claude Code, Codex, Aider).
@@ -15,19 +21,19 @@ codegate exposes a single REST API that accepts a prompt and a provider name, sp
 
 ## Quick Start
 
-**1. Install dependencies**
+### 1. Install dependencies
 
 ```bash
 npm install
 ```
 
-**2. Set your auth token**
+### 2. Set your auth token
 
 ```bash
 export CODEGATE_AUTH_TOKEN="your-secret-token"
 ```
 
-**3. Start the server**
+### 3. Start the server
 
 ```bash
 npm run build && npm start
@@ -60,13 +66,6 @@ curl http://localhost:3000/health
   ],
   "uptime": 42
 }
-```
-
-### List Providers
-
-```bash
-curl http://localhost:3000/api/providers \
-  -H "Authorization: Bearer your-secret-token"
 ```
 
 ### Execute a Prompt
@@ -131,60 +130,6 @@ curl -X POST http://localhost:3000/api/cancel/a1b2c3d4-... \
 }
 ```
 
-## Configuration
-
-All configuration is via environment variables. Only `CODEGATE_AUTH_TOKEN` is required.
-
-| Variable | Default | Description |
-|---|---|---|
-| `CODEGATE_AUTH_TOKEN` | _(required)_ | Bearer token for API authentication |
-| `CODEGATE_PORT` | `3000` | HTTP server port |
-| `CODEGATE_LOG_LEVEL` | `info` | Log level: trace, debug, info, warn, error, fatal |
-| `CODEGATE_MAX_CONCURRENCY` | `4` | Maximum concurrent executions |
-| `CODEGATE_MAX_QUEUE_SIZE` | `16` | Maximum requests waiting in queue |
-| `CODEGATE_QUEUE_TIMEOUT_MS` | `30000` | How long a request can wait in the queue (ms) |
-| `CODEGATE_DEFAULT_TIMEOUT_MS` | `300000` | Default execution timeout (ms) |
-| `CODEGATE_MAX_TIMEOUT_MS` | `600000` | Maximum allowed execution timeout (ms) |
-| `CODEGATE_SHUTDOWN_TIMEOUT_MS` | `30000` | Time to drain active work during shutdown (ms) |
-| `CODEGATE_DEFAULT_MODEL` | `claude-sonnet-4-20250514` | Default model when not specified in the request |
-| `CODEGATE_DEFAULT_PROVIDER` | `claude-code` | Default provider |
-
-See [docs/configuration.md](docs/configuration.md) for full details.
-
-## Providers
-
-codegate ships with three built-in providers:
-
-| Provider | CLI Binary | Description |
-|---|---|---|
-| `claude-code` | `claude` | Anthropic's Claude Code CLI |
-| `codex` | `codex` | OpenAI's Codex CLI |
-| `aider` | `aider` | Aider AI pair programming CLI |
-
-Each provider must have its CLI binary installed and on `PATH`. The `/health` endpoint reports availability for each provider.
-
-See [docs/providers.md](docs/providers.md) for CLI flags, output parsing details, and how to add custom providers.
-
-## Docker
-
-**Build and run:**
-
-```bash
-npm run build
-docker build -t codegate .
-docker run -p 3000:3000 -e CODEGATE_AUTH_TOKEN=your-secret-token codegate
-```
-
-**Docker Compose:**
-
-Create a `.env` file with your configuration, then:
-
-```bash
-docker compose up
-```
-
-See [docs/deployment.md](docs/deployment.md) for production deployment guidance.
-
 ## Architecture
 
 ```
@@ -226,6 +171,36 @@ Key design points:
 - **BaseProvider** handles all process spawning; concrete providers only define CLI args and output parsing
 - **ExecutionTracker** enables cancellation of in-flight requests via AbortController
 
+## Providers
+
+codegate ships with three built-in providers:
+
+| Provider | CLI Binary | Description |
+|---|---|---|
+| `claude-code` | `claude` | Anthropic's Claude Code CLI |
+| `codex` | `codex` | OpenAI's Codex CLI |
+| `aider` | `aider` | Aider AI pair programming CLI |
+
+Each provider must have its CLI binary installed and on `PATH`. The `/health` endpoint reports availability for each provider.
+
+See the [Provider Guide](./providers) for CLI flags, output parsing details, and how to add custom providers.
+
+## Docker
+
+```bash
+npm run build
+docker build -t codegate .
+docker run -p 3000:3000 -e CODEGATE_AUTH_TOKEN=your-secret-token codegate
+```
+
+With Docker Compose, create a `.env` file with your configuration, then:
+
+```bash
+docker compose up
+```
+
+See the [Deployment Guide](./deployment) for production deployment guidance.
+
 ## Testing
 
 ```bash
@@ -240,13 +215,6 @@ npm run typecheck
 ```
 
 The project uses [Vitest](https://vitest.dev/) as its test runner.
-
-## Detailed Documentation
-
-- [API Reference](docs/api.md) -- full request/response schemas, error codes, file uploads
-- [Provider Guide](docs/providers.md) -- built-in providers, CLI flags, custom provider tutorial
-- [Deployment Guide](docs/deployment.md) -- Docker, production checklist, graceful shutdown
-- [Configuration Reference](docs/configuration.md) -- every env var with constraints and examples
 
 ## License
 
