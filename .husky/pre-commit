@@ -1,0 +1,4 @@
+bash scripts/check-docs.sh
+npx lint-staged
+npm run typecheck
+npm test
